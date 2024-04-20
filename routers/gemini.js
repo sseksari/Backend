@@ -8,12 +8,16 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 gemini.get('/places',async(req,res)=>{
     const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-    const prompt = "Write a story about a magic backpack"
+    const prompt = "Can you give me some places to visit in : New York. return me information in json format."
     try {
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const text = response.text();
-        res.send(text)
+        var text = response.text();
+        text=(text.replace(/[`]+/g, ''));
+        let stringToRemove = "json";
+        let newString = text.startsWith(stringToRemove) ? text.substring(stringToRemove.length) : text;
+        // console.log(newString);
+        res.send(newString)
     } catch (error) {
         console.log(error)
         res.send("No Response")
